@@ -1,0 +1,6 @@
+- dynamically adding script(s) - upon console function call?
+- arguments to script - how to target table and how to place button
+- useful debug mode - built in Matter renderer
+- modularization
+- bundling
+- flip table physics
