@@ -1,46 +1,50 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="app.css" />
-    <script async defer src="src/load.js" buttonParentSelector="#button-slot" tableSelector="#table"></script>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="app.css" />
+  <!-- <script async defer src="src/load.js" buttonParentSelector="#button-slot" tableSelector="#table"></script>
     <script>
       window.addEventListener("load", () => iWantToFlipTables());
-    </script>
-  </head>
-  <body>
-    <header>Header</header>
-    <container>
-      <sidebar>
-        Sidebar
-        <div id="button-slot"></div>
-      </sidebar>
-      <content>
-        <table id="table">
-          <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Price</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="other">1</td>
-              <td>Apples</td>
-              <td>$1.99</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Avocado</td>
-              <td>$0.99</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Lettuce</td>
-              <td>$1.99</td>
-            </tr>
-          </tbody>
-        </table>
-      </content>
-    </container>
-  </body>
+    </script> -->
+  <script type="module" id="flip-table" defer src="src/entrypoint.ts" data-button-parent-selector="#button-slot" data-table-selector="#table" debug></script>
+</head>
+
+<body>
+  <header>Header</header>
+  <container>
+    <sidebar>
+      Sidebar
+      <div id="button-slot"></div>
+    </sidebar>
+    <content>
+      <table id="table">
+        <thead>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Price</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="other">1</td>
+            <td>Apples</td>
+            <td>$1.99</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Avocado</td>
+            <td>$0.99</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Lettuce</td>
+            <td>$1.99</td>
+          </tr>
+        </tbody>
+      </table>
+    </content>
+  </container>
+</body>
+
 </html>
