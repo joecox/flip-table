@@ -12,30 +12,34 @@
  * document.body.append(script);
  */
 
-import { type Args, start } from './main';
+import { type Args, start } from "./main";
 
 const args = loadArguments();
 start(args);
 
 function loadArguments(): Args {
-    const script = document.getElementById("flip-table")
-    if (!script || !(script instanceof HTMLScriptElement)) {
-      throw new Error("No script with id #flip-table found");
-    }
-    const buttonParentSelector = script.getAttribute("data-button-parent-selector");
-    const tableSelector = script.getAttribute("data-table-selector");
-    const debug = script.hasAttribute("debug");
-
-    const args = {
-      buttonParentSelector,
-      tableSelector,
-      debug,
-    };
-
-    const missingArgs = Object.entries(args).filter(([_, argVal]) => !argVal);
-    if (missingArgs.length) {
-      throw new Error(`The script must define attr: ${missingArgs.map(a => a[0]).join(', ')}`);
-    }
-
-    return args as Args;
+  const script = document.getElementById("flip-table");
+  if (!script || !(script instanceof HTMLScriptElement)) {
+    throw new Error("No script with id #flip-table found");
   }
+  const buttonParentSelector = script.getAttribute(
+    "data-button-parent-selector",
+  );
+  const tableSelector = script.getAttribute("data-table-selector");
+  const debug = script.hasAttribute("debug");
+
+  const args = {
+    buttonParentSelector,
+    tableSelector,
+    debug,
+  };
+
+  const missingArgs = Object.entries(args).filter(([_, argVal]) => !argVal);
+  if (missingArgs.length) {
+    throw new Error(
+      `The script must define attr: ${missingArgs.map((a) => a[0]).join(", ")}`,
+    );
+  }
+
+  return args as Args;
+}

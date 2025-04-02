@@ -1,4 +1,4 @@
-import { BodyTrackingDomElement } from "../bodies/dom";
+import type { BodyTrackingDomElement } from "../bodies/dom";
 import { Renderer } from "./renderer";
 
 /**

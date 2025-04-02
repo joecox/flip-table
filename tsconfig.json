@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "target": "ES2022",
+    "strict": true
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}

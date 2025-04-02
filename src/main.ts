@@ -1,5 +1,5 @@
-import { addButton } from "./flip/buttons/flip";
 import { addDebugButton } from "./flip/buttons/debug";
+import { addButton } from "./flip/buttons/flip";
 import { setupFlip } from "./flip/setup";
 
 export interface Args {
@@ -7,7 +7,11 @@ export interface Args {
   tableSelector: string;
   debug?: boolean;
 }
-export async function start({ buttonParentSelector, tableSelector, debug = false}: Args) {
+export async function start({
+  buttonParentSelector,
+  tableSelector,
+  debug = false,
+}: Args) {
   console.log(
     "%cInitializing Table Flipper (ノಠ益ಠ)ノ ...",
     "font-size: 1.2rem",
