@@ -1,7 +1,10 @@
-import { IBodyDefinition } from "matter-js";
+import type { IBodyDefinition } from "matter-js";
 import { Matter } from "../matter";
 
-export function createBodyFromElement(elem: HTMLElement, opts?: IBodyDefinition) {
+export function createBodyFromElement(
+  elem: HTMLElement,
+  opts?: IBodyDefinition,
+) {
   // DOM position is based from the top left
   const { x, y, width, height } = elem.getBoundingClientRect();
 

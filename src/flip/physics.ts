@@ -1,9 +1,15 @@
+import { registerAnimation } from "./animate";
 import { createBodyFromElement } from "./bodies/dom";
+import {
+  canCollide,
+  groundCollisionFilter,
+  makeShelfCollisionFilter,
+  makeTableLeafCollisionFilter,
+  tableCollisionFilter,
+} from "./collision";
 import { Matter } from "./matter";
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
-import { canCollide, groundCollisionFilter, makeShelfCollisionFilter, makeTableLeafCollisionFilter, tableCollisionFilter } from "./collision";
-import { registerAnimation } from "./animate";
 
 // Override canCollide
 Matter.Detector.canCollide = canCollide;
@@ -101,7 +107,10 @@ export class Flipper {
     // const tableRenderer = new MatterToDOMRenderer(this.table, { category: tableCollision, mask: tableCollision | groundCollision });
     const tableBody = createBodyFromElement(this.table);
     tableBody.collisionFilter = tableCollisionFilter;
-    const tableComposite = Matter.Composite.create({ label: "table", bodies: [tableBody] });
+    const tableComposite = Matter.Composite.create({
+      label: "table",
+      bodies: [tableBody],
+    });
 
     // const tableRenderer = new BodyTrackingDomElement(this.table);
 
@@ -114,7 +123,8 @@ export class Flipper {
 
       const leafBody = createBodyFromElement(leaf, { label: "leaf" });
       // Scale down the body so it collides less with other leaves.
-      Matter.Body.scale(leafBody,
+      Matter.Body.scale(
+        leafBody,
         // scale down sides by 10% each
         0.8,
         // scale top down by 10% of height
@@ -126,10 +136,16 @@ export class Flipper {
       leafBodies.push(leafBody);
 
       const { left, bottom, width } = leaf.getBoundingClientRect();
-      const shelf = Matter.Bodies.rectangle(left + width / 2, bottom, width, 1, {
-        label: "shelf",
-        density: 0.1,
-      });
+      const shelf = Matter.Bodies.rectangle(
+        left + width / 2,
+        bottom,
+        width,
+        1,
+        {
+          label: "shelf",
+          density: 0.1,
+        },
+      );
       shelf.collisionFilter = makeShelfCollisionFilter(shelfGroup);
       shelfBodies.push(shelf);
 
@@ -140,7 +156,7 @@ export class Flipper {
         pointA: {
           // Offset of left end of shelf from center of table
           x: shelf.bounds.min.x - tableBody.position.x,
-          y: shelf.position.y - tableBody.position.y
+          y: shelf.position.y - tableBody.position.y,
         },
         pointB: {
           // Offset of left end of shelf from center of shelf
@@ -148,7 +164,7 @@ export class Flipper {
           y: 0,
         },
         length: 0,
-      })
+      });
       const rightConstraint = Matter.Constraint.create({
         bodyA: tableBody,
         bodyB: shelf,
@@ -156,7 +172,7 @@ export class Flipper {
         pointA: {
           // Offset of right end of shelf from center of table
           x: shelf.bounds.max.x - tableBody.position.x,
-          y: shelf.position.y - tableBody.position.y
+          y: shelf.position.y - tableBody.position.y,
         },
         pointB: {
           // Offset of right end of shelf from center of shelf
@@ -164,7 +180,7 @@ export class Flipper {
           y: 0,
         },
         length: 0,
-      })
+      });
 
       Matter.Composite.add(tableComposite, shelf);
       Matter.Composite.add(tableComposite, leftConstraint);

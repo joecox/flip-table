@@ -28,12 +28,12 @@ export class DebugRenderer extends Renderer {
       },
     });
     Matter.Render.run(render);
-    Matter.Events.on(this.engine, 'collisionActive', (e) => {
+    Matter.Events.on(this.engine, "collisionActive", (e) => {
       if (e.pairs) {
         // console.log(e)
         // console.log(e.pairs.filter(p => ["leaf", "shelf"].includes(p.bodyA.label) && ["leaf", "shelf"].includes(p.bodyB.label)));
       }
-    })
+    });
   }
 
   stop() {

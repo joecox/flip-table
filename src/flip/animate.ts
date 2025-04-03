@@ -2,7 +2,7 @@
  * Animate the flipper and apply forces to flip the table.
  */
 
-import { Matter } from './matter';
+import { Matter } from "./matter";
 
 export function registerAnimation(engine: Matter.Engine, table: Matter.Body) {
   Matter.Events.on(engine, "beforeUpdate", (ev) => {
@@ -10,7 +10,7 @@ export function registerAnimation(engine: Matter.Engine, table: Matter.Body) {
     if (ev.timestamp > 2000 && ev.timestamp < 2500) {
       flip(table);
     }
-  })
+  });
 }
 
 function flip(table: Matter.Body) {

@@ -5,7 +5,10 @@ interface ModifiedCollisionFilter {
   collidesWith?: number[];
 }
 
-export function canCollide(filterA: ModifiedCollisionFilter, filterB: ModifiedCollisionFilter) {
+export function canCollide(
+  filterA: ModifiedCollisionFilter,
+  filterB: ModifiedCollisionFilter,
+) {
   if (filterA.group === filterB.group && filterA.group !== 0) {
     return filterA.group > 0;
   }
@@ -14,7 +17,10 @@ export function canCollide(filterA: ModifiedCollisionFilter, filterB: ModifiedCo
     return false;
   }
 
-  return filterA.collidesWith?.includes(filterB.group) && filterB.collidesWith?.includes(filterA.group);
+  return (
+    filterA.collidesWith?.includes(filterB.group) &&
+    filterB.collidesWith?.includes(filterA.group)
+  );
 }
 
 // Collision rules
@@ -35,18 +41,20 @@ export const groundCollisionFilter: ModifiedCollisionFilter = {
     tableGroup,
     // The ground collides with table leaves.
     tableLeafGroup,
-  ]
-}
+  ],
+};
 
 export const tableCollisionFilter: ModifiedCollisionFilter = {
   group: tableGroup,
   collidesWith: [
     // Table collides with the ground.
-    groundGroup
-  ]
+    groundGroup,
+  ],
 };
 
-export function makeTableLeafCollisionFilter(shelfGroup: number): ModifiedCollisionFilter {
+export function makeTableLeafCollisionFilter(
+  shelfGroup: number,
+): ModifiedCollisionFilter {
   return {
     // Table leaves collide with each other by virtue of having the same group.
     group: tableLeafGroup,
@@ -56,15 +64,17 @@ export function makeTableLeafCollisionFilter(shelfGroup: number): ModifiedCollis
       // Table leaves collide with the ground.
       groundGroup,
     ],
-  }
+  };
 }
 
-export function makeShelfCollisionFilter(shelfGroup: number): ModifiedCollisionFilter {
+export function makeShelfCollisionFilter(
+  shelfGroup: number,
+): ModifiedCollisionFilter {
   return {
     // Each individual shelf has its own group.
     group: shelfGroup,
     // The shelf collides with table leafs, but only the table leaf which specifies this
     // particular shelf's group.
     collidesWith: [tableLeafGroup],
-  }
+  };
 }
