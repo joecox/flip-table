@@ -1,4 +1,4 @@
-import { Matter } from "./matter";
+import Matter from "matter-js";
 
 interface ModifiedCollisionFilter {
   group: number;

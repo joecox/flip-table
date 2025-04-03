@@ -3,9 +3,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "matter-js": "0.20.0"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/matter-js": "^0.19.8",
+    "@types/matter-js": "0.19.8",
     "typescript": "^5.8.2",
     "vite": "^6.2.4",
     "vite-plugin-wasm": "^3.4.1"

@@ -1,4 +1,4 @@
-import { Matter } from "../matter";
+import Matter from "matter-js";
 import { Renderer } from "./renderer";
 
 export class DebugRenderer extends Renderer {
@@ -15,6 +15,7 @@ export class DebugRenderer extends Renderer {
       canvas,
       engine: this.engine,
       options: {
+        wireframeBackground: "transparent",
         height: window.innerHeight,
         width: window.innerWidth,
         showBounds: true,

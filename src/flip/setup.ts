@@ -22,7 +22,7 @@ export function setupFlip(tableSelector: string) {
           flipper = new Flipper(DomRenderer, table);
         }
 
-        flipper.flip();
+        flipper.flip(table);
       }
     },
   );

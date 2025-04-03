@@ -1,4 +1,4 @@
-import type { Matter } from "../matter";
+import type Matter from "matter-js";
 
 export class Renderer {
   engine: Matter.Engine;
@@ -9,7 +9,10 @@ export class Renderer {
   /**
    * Begin rendering objects to the screen.
    */
-  start() {
+  start(
+    _table: { body: Matter.Body; elem: HTMLElement },
+    _leafBodies: { body: Matter.Body; elem: HTMLElement }[],
+  ) {
     throw new Error("Not implemented");
   }
   /**
