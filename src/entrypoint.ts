@@ -34,7 +34,7 @@ function loadArguments(): Args {
     debug,
   };
 
-  const missingArgs = Object.entries(args).filter(([_, argVal]) => !argVal);
+  const missingArgs = Object.entries(args).filter(([_, argVal]) => argVal === undefined);
   if (missingArgs.length) {
     throw new Error(
       `The script must define attr: ${missingArgs.map((a) => a[0]).join(", ")}`,
