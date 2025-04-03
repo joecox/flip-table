@@ -1,1 +1,4 @@
 node_modules
+dist/*
+!dist/debug.js
+!dist/index.js
