@@ -3,6 +3,7 @@ import { Matter } from "./matter";
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
 import { canCollide, groundCollisionFilter, makeShelfCollisionFilter, makeTableLeafCollisionFilter, tableCollisionFilter } from "./collision";
+import { registerAnimation } from "./animate";
 
 // Override canCollide
 Matter.Detector.canCollide = canCollide;
@@ -197,16 +198,7 @@ export class Flipper {
       groundBody,
     ]);
 
-    setTimeout(() => {
-      Matter.Body.applyForce(
-        tableBody,
-        {
-          x: tableBody.bounds.max.x + 10,
-          y: tableBody.bounds.max.y,
-        },
-        { x: 0.5, y: 2 },
-      );
-    }, 2000);
+    registerAnimation(this.engine, tableBody);
 
     this.renderer.start();
     Matter.Runner.run(this.runner, this.engine);
