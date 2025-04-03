@@ -1,6 +1,5 @@
 import { freezeViewport, unfreezeViewport } from "../freezeViewport";
 import { Flipper } from "./physics";
-import { DebugRenderer } from "./render/debug";
 import { DomRenderer } from "./render/dom";
 
 export const startFlipEvent = new Event("flip.start");

@@ -2,9 +2,10 @@ import { createBodyFromElement } from "./bodies/dom";
 import { Matter } from "./matter";
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
+import { canCollide, groundCollisionFilter, makeShelfCollisionFilter, makeTableLeafCollisionFilter, tableCollisionFilter } from "./collision";
 
-import { World, ColliderDesc, Collider, RigidBodyDesc, RigidBody } from '@dimforge/rapier2d';
-import { Pixel, toMeter } from "./units";
+// Override canCollide
+Matter.Detector.canCollide = canCollide;
 
 // class MatterToDOMRenderer {
 //   constructor(elem: HTMLElement, { category, mask } = { category: 1, mask: -1 }) {
@@ -62,17 +63,17 @@ import { Pixel, toMeter } from "./units";
 // }
 
 export class Flipper {
-  world: World;
-  // runner: Matter.Runner;
+  engine: Matter.Engine;
+  runner: Matter.Runner;
   renderer: Renderer;
   table: HTMLElement;
   tableLeafs: HTMLElement[];
   tableLeafClones: HTMLElement[];
 
   constructor(rendererCls: typeof Renderer, table: HTMLElement) {
-    this.world = new World({ x: 0, y: -9.81 });
-    // this.runner = Matter.Runner.create();
-    this.renderer = new rendererCls(this.world);
+    this.engine = Matter.Engine.create();
+    this.runner = Matter.Runner.create();
+    this.renderer = new rendererCls(this.engine);
 
     this.table = table;
     this.tableLeafs = [];
@@ -84,122 +85,141 @@ export class Flipper {
 
     // Add the ground positioned at the bottom of the table
     const groundHeight = 20;
-    const groundBodyDesc = RigidBodyDesc.fixed().setTranslation(
+    const groundBody = Matter.Bodies.rectangle(
       // position horizontally in the center of the window
-      toMeter(window.innerWidth / 2 as Pixel),
-      // position vertically below the table
-      toMeter(tableBottom + groundHeight / 2 as Pixel),
+      window.innerWidth / 2,
+      // position vertically in the center of the window
+      tableBottom + groundHeight / 2,
+      window.innerWidth + 500,
+      groundHeight,
+      { isStatic: true },
     );
-    const groundBody = this.world.createRigidBody(groundBodyDesc)
-    const groundColliderDesc = ColliderDesc.cuboid(
-      toMeter(window.innerWidth / 2 as Pixel),
-      toMeter(groundHeight / 2 as Pixel),
-    )
-    this.world.createCollider(groundColliderDesc, groundBody);
+    groundBody.collisionFilter = groundCollisionFilter;
 
+    // Add root table body
+    // const tableRenderer = new MatterToDOMRenderer(this.table, { category: tableCollision, mask: tableCollision | groundCollision });
+    const tableBody = createBodyFromElement(this.table);
+    tableBody.collisionFilter = tableCollisionFilter;
+    const tableComposite = Matter.Composite.create({ label: "table", bodies: [tableBody] });
 
-    // const groundCollision = 0x01;
-    // const tableCollision = 0x02;
-    // const itemsCollision = 0x04;
-    // const shelfCollision = 0x08;
-    // // Add root table body
-    // // const tableRenderer = new MatterToDOMRenderer(this.table, { category: tableCollision, mask: tableCollision | groundCollision });
-    // const tableContainerBody = createBodyFromElement(this.table);
-    // // tableBody.collisionFilter = {
-    // //   category: tableCollision,
-    // //   mask: tableCollision | groundCollision,
-    // // };
-    // // const tableRenderer = new BodyTrackingDomElement(this.table);
+    // const tableRenderer = new BodyTrackingDomElement(this.table);
 
-    // const tableLeafs = getLeafElements(this.table);
-    // const leafBodies: Matter.Body[] = [];
-    // const shelfBodies: Matter.Body[] = [];
+    const tableLeafs = getLeafElements(this.table);
+    const leafBodies: Matter.Body[] = [];
+    const shelfBodies: Matter.Body[] = [];
 
-    // for (const leaf of tableLeafs) {
-    //   const group = Matter.Body.nextGroup(false);
-    //   const body = createBodyFromElement(leaf, { label: "leaf", collisionFilter: { group }});
-    //   leafBodies.push(body);
+    for (const leaf of tableLeafs) {
+      const shelfGroup = Matter.Body.nextGroup(false);
 
-    //   const { left, bottom, width } = leaf.getBoundingClientRect();
-    //   const shelf = Matter.Bodies.rectangle(left + width / 2, bottom, width, 1, {
-    //     label: "shelf",
-    //     collisionFilter: { group },
-    //     density: 0.01,
-    //   });
-    //   shelfBodies.push(shelf);
-    // }
+      const leafBody = createBodyFromElement(leaf, { label: "leaf" });
+      // Scale down the body so it collides less with other leaves.
+      Matter.Body.scale(leafBody,
+        // scale down sides by 10% each
+        0.8,
+        // scale top down by 10% of height
+        0.9,
+        // point at the bottom center of the object so it scales down only from top
+        { x: leafBody.position.x, y: leafBody.bounds.max.y },
+      );
+      leafBody.collisionFilter = makeTableLeafCollisionFilter(shelfGroup);
+      leafBodies.push(leafBody);
 
-    // this.tableLeafs = tableLeafs;
-    // // const shelfs = [];
-    // // tableLeafs.forEach((leaf) => {
-    // //   // Create a fixed clone and hide the real leaf
-    // //   const tableLeafClone = leaf.cloneNode(true);
-    // //   const leafBoundingRect = leaf.getBoundingClientRect();
-    // //   tableLeafClone.style.position = "fixed";
-    // //   tableLeafClone.style.top = `${leafBoundingRect.y}px`;
-    // //   tableLeafClone.style.left = `${leafBoundingRect.x}px`;
-    // //   tableLeafClone.style.width = `${leafBoundingRect.width}px`;
-    // //   tableLeafClone.style.height = `${leafBoundingRect.height}px`;
-    // //   // document.body.appendChild(tableLeafClone);
-    // //   // leaf.style.visibility = 'hidden';
-    // //   // this.tableLeafClones.push(tableLeafClone);
-    // //   // this.domRenderers.push(
-    // //   //   new MatterToDOMRenderer(tableLeafClone, { category: itemsCollision, mask: itemsCollision | groundCollision })
-    // //   //   // new MatterToDOMRenderer(tableLeafClone)
-    // //   // );
+      const { left, bottom, width } = leaf.getBoundingClientRect();
+      const shelf = Matter.Bodies.rectangle(left + width / 2, bottom, width, 1, {
+        label: "shelf",
+        density: 0.1,
+      });
+      shelf.collisionFilter = makeShelfCollisionFilter(shelfGroup);
+      shelfBodies.push(shelf);
 
-    // //   // Add a fixed shelf to the table body to hold the leaf clone
-    // //   // shelfs.push(
-    // //   //   Matter.Bodies.rectangle(leafBoundingRect.left + leafBoundingRect.width / 2, leafBoundingRect.bottom, leafBoundingRect.width, 1)
-    // //   // );
-    // // });
-    // // const shelfConstraints = shelfBodies.map(s => {
-    // //   return Matter.Constraint.create({
-    // //     bodyA: tableBody,
-    // //     bodyB: s,
+      const leftConstraint = Matter.Constraint.create({
+        bodyA: tableBody,
+        bodyB: shelf,
+        // Constrain the shelf to the table at its left end
+        pointA: {
+          // Offset of left end of shelf from center of table
+          x: shelf.bounds.min.x - tableBody.position.x,
+          y: shelf.position.y - tableBody.position.y
+        },
+        pointB: {
+          // Offset of left end of shelf from center of shelf
+          x: shelf.bounds.min.x - shelf.position.x,
+          y: 0,
+        },
+        length: 0,
+      })
+      const rightConstraint = Matter.Constraint.create({
+        bodyA: tableBody,
+        bodyB: shelf,
+        // Constrain the shelf to the table at its left end
+        pointA: {
+          // Offset of right end of shelf from center of table
+          x: shelf.bounds.max.x - tableBody.position.x,
+          y: shelf.position.y - tableBody.position.y
+        },
+        pointB: {
+          // Offset of right end of shelf from center of shelf
+          x: shelf.bounds.max.x - shelf.position.x,
+          y: 0,
+        },
+        length: 0,
+      })
 
-    // //   })
-    // // })
+      Matter.Composite.add(tableComposite, shelf);
+      Matter.Composite.add(tableComposite, leftConstraint);
+      Matter.Composite.add(tableComposite, rightConstraint);
+    }
 
-    // const tableBody = Matter.Body.create({
-    //   parts: [...shelfBodies],
-    //   // collisionFilter: {
-    //   //   category: shelfCollision,
-    //   // },
-    // })
+    this.tableLeafs = tableLeafs;
+    // const shelfs = [];
+    // tableLeafs.forEach((leaf) => {
+    //   // Create a fixed clone and hide the real leaf
+    //   const tableLeafClone = leaf.cloneNode(true);
+    //   const leafBoundingRect = leaf.getBoundingClientRect();
+    //   tableLeafClone.style.position = "fixed";
+    //   tableLeafClone.style.top = `${leafBoundingRect.y}px`;
+    //   tableLeafClone.style.left = `${leafBoundingRect.x}px`;
+    //   tableLeafClone.style.width = `${leafBoundingRect.width}px`;
+    //   tableLeafClone.style.height = `${leafBoundingRect.height}px`;
+    //   // document.body.appendChild(tableLeafClone);
+    //   // leaf.style.visibility = 'hidden';
+    //   // this.tableLeafClones.push(tableLeafClone);
+    //   // this.domRenderers.push(
+    //   //   new MatterToDOMRenderer(tableLeafClone, { category: itemsCollision, mask: itemsCollision | groundCollision })
+    //   //   // new MatterToDOMRenderer(tableLeafClone)
+    //   // );
+    // });
 
-    // // add all of the bodies to the world
-    // Matter.Composite.add(this.engine.world, [
-    //   tableBody,
-    //   ...leafBodies,
-    //   // ...shelfBodies,
-    //   // ...shelfConstraints,
-    //   groundBody,
-    // ]);
+    // add the ground, table (+shelves), and leaves to the world
+    Matter.Composite.add(this.engine.world, [
+      tableComposite,
+      ...leafBodies,
+      groundBody,
+    ]);
 
-    // setTimeout(() => {
-    //   Matter.Body.applyForce(
-    //     tableBody,
-    //     {
-    //       x: tableBody.bounds.max.x + 10,
-    //       y: tableBody.bounds.max.y,
-    //     },
-    //     { x: 0.5, y: 2 },
-    //   );
-    // }, 2000);
+    setTimeout(() => {
+      Matter.Body.applyForce(
+        tableBody,
+        {
+          x: tableBody.bounds.max.x + 10,
+          y: tableBody.bounds.max.y,
+        },
+        { x: 0.5, y: 2 },
+      );
+    }, 2000);
 
     this.renderer.start();
-    // Matter.Runner.run(this.runner, this.engine);
+    Matter.Runner.run(this.runner, this.engine);
   }
 
   stop() {
     this.renderer.stop();
-    // Matter.Runner.stop(this.runner);
-    // Matter.World.clear(this.engine.world, false);
-    // Matter.Engine.clear(this.engine);
+    Matter.Runner.stop(this.runner);
+    Matter.World.clear(this.engine.world, false);
+    Matter.Engine.clear(this.engine);
     // this.domRenderers.forEach((r) => r.reset());
-    // this.tableLeafs.forEach((l) => l.style.removeProperty("visibility"));
-    // this.tableLeafClones.forEach((c) => c.remove());
+    this.tableLeafs.forEach((l) => l.style.removeProperty("visibility"));
+    this.tableLeafClones.forEach((c) => c.remove());
     // this.domRenderers = [];
   }
 }

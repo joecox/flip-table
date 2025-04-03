@@ -1,10 +1,10 @@
-import { World } from "@dimforge/rapier2d";
+import type { Matter } from "../matter";
 
 export class Renderer {
-  world: World;
+  engine: Matter.Engine;
 
-  constructor(world: World) {
-    this.world = world;
+  constructor(engine: Matter.Engine) {
+    this.engine = engine;
   }
   /**
    * Begin rendering objects to the screen.
