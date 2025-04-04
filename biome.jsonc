@@ -7,5 +7,8 @@
   },
   "formatter": {
     "useEditorconfig": true
+  },
+  "files": {
+    "ignore": ["dist/*"]
   }
 }

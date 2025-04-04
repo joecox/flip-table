@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import { registerAnimation } from "./animate";
-import { createBodyFromElement } from "./bodies/dom";
+import { createBodyFromElement } from "./body";
 import {
   canCollide,
   groundCollisionFilter,
