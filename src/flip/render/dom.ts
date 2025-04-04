@@ -61,6 +61,16 @@ class BodyTrackingDomElement {
   constructor(elem: HTMLElement, body: Matter.Body) {
     this.elem = elem;
     this.clone = elem.cloneNode(true) as HTMLElement;
+
+    // Style the clone using the original's computed styles
+    // takes cascading styles/etc into account that would
+    // be lost when the clone is in a different part of the DOM.
+    const computedStyle = window.getComputedStyle(elem);
+    for (let i = 0; i < computedStyle.length; i++) {
+      const propertyName = computedStyle.item(i);
+      this.clone.style.setProperty(propertyName, computedStyle.getPropertyValue(propertyName));
+    }
+
     this.body = body;
 
     // As the DOM element rotates, the height and width of the bounding rect changes.

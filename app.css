@@ -41,3 +41,7 @@ content {
 #button-slot {
   padding: 5px;
 }
+
+#table th {
+  background-color: lightgray;
+}
