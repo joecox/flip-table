@@ -19,7 +19,7 @@ export class Flipper {
   runner: Matter.Runner;
   renderer: Renderer;
 
-  constructor(rendererCls: typeof Renderer, table: HTMLElement) {
+  constructor(rendererCls: typeof Renderer) {
     this.engine = Matter.Engine.create();
     this.runner = Matter.Runner.create();
     this.renderer = new rendererCls(this.engine);

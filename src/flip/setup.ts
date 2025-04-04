@@ -17,9 +17,9 @@ export function setupFlip(tableSelector: string) {
         const debug = e instanceof CustomEvent && e.detail === "debug";
         if (debug) {
           const { DebugRenderer } = await import("./render/debug");
-          flipper = new Flipper(DebugRenderer, table);
+          flipper = new Flipper(DebugRenderer);
         } else {
-          flipper = new Flipper(DomRenderer, table);
+          flipper = new Flipper(DomRenderer);
         }
 
         flipper.flip(table);
