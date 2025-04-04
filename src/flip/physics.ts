@@ -8,7 +8,7 @@ import {
   makeTableLeafCollisionFilter,
   tableCollisionFilter,
 } from "./collision";
-import { tableMass } from "./constants";
+import { maxLeafMass, minLeafMass, tableMass } from "./constants";
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
 
@@ -61,7 +61,13 @@ export class Flipper {
     for (const leaf of tableLeafs) {
       const shelfGroup = Matter.Body.nextGroup(false);
 
-      const leafBody = createBodyFromElement(leaf, { label: "leaf" });
+      const leafMass =
+        Math.random() * (maxLeafMass - minLeafMass) + minLeafMass;
+      const leafBody = createBodyFromElement(leaf, {
+        label: "leaf",
+        mass: leafMass,
+        inverseMass: 1 / leafMass,
+      });
       // Scale down the body so it collides less with other leaves.
       Matter.Body.scale(
         leafBody,
