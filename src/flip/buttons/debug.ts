@@ -6,7 +6,7 @@ const debugFlipEvent = new CustomEvent(startFlipEvent.type, {
 
 const debugButton = document.createElement("button");
 debugButton.innerText = "Debug";
-debugButton.style.position = "absolute";
+debugButton.style.position = "fixed";
 debugButton.style.left = "10px";
 debugButton.style.bottom = "10px";
 debugButton.style.zIndex = "9999";

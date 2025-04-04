@@ -12,13 +12,6 @@ export class DomRenderer extends Renderer {
     table: { body: Matter.Body; elem: HTMLElement },
     leaves: { body: Matter.Body; elem: HTMLElement }[],
   ) {
-    // Clone and hide the table and leaves so the layout stays the same
-    // 1. Clone the leaves.
-    // 2. Set the visibility of all original leaves to hidden. Done before cloning the table
-    //    so that the cloned table doesn't have extra non-animated copies of leaves
-    //    while the animated leaves fly all over the place.
-    //    (This is done implicitly while cloning the leaves in BodyTrackingDomElement)
-    // 3. Clone the table
     const tableTracking = new BodyTrackingDomElement(table.elem, table.body);
     this.#trackedElements.push(tableTracking);
     this.#trackedElements.push(
@@ -93,6 +86,7 @@ class BodyTrackingDomElement {
 
     // Save the element's initial inline style to be able to reset later.
     this.#initialStyleText = this.elem.style.cssText;
+    this.elem.style.position = 'relative';
   }
 
   render() {
@@ -119,18 +113,6 @@ class BodyTrackingDomElement {
       rotate(${rotation}rad)
     `;
   }
-
-  /**
-   * Transformation of the DOM element to adhere to the desired body position and rotation.
-   *
-   * If the element is transforming relative to a transforming parent, we need to first undo the effect
-   * of the parent's transformations:
-   * - undo translation due to rotation - the child element will translate when the parent rotates
-   * - undo rotation
-   * - undo parent translation
-   *
-   * From here, the element should be in its original position. Then apply the element's translation and rotation.
-   */
 
   /**
    * Compute transforms:

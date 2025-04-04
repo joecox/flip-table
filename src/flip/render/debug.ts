@@ -6,7 +6,7 @@ export class DebugRenderer extends Renderer {
 
   start() {
     const canvas = document.createElement("canvas");
-    canvas.style.position = "absolute";
+    canvas.style.position = "fixed";
     canvas.style.inset = "0";
     this.#canvas = canvas;
     document.body.appendChild(this.#canvas);
