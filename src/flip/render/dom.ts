@@ -87,6 +87,7 @@ class BodyTrackingDomElement {
     // Save the element's initial inline style to be able to reset later.
     this.#initialStyleText = this.elem.style.cssText;
     this.elem.style.position = 'relative';
+    this.elem.style.transition = 'none';
   }
 
   render() {
