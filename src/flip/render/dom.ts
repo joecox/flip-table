@@ -22,7 +22,9 @@ export class DomRenderer extends Renderer {
     const tableTracking = new BodyTrackingDomElement(table.elem, table.body);
     this.#trackedElements.push(tableTracking);
     this.#trackedElements.push(
-      ...leaves.map((l) => new BodyTrackingDomElement(l.elem, l.body, tableTracking)),
+      ...leaves.map(
+        (l) => new BodyTrackingDomElement(l.elem, l.body, tableTracking),
+      ),
     );
     this.#animationRequestId = requestAnimationFrame(() => this.#rerender());
   }
@@ -71,7 +73,11 @@ class BodyTrackingDomElement {
   #initialCenter: Matter.Vector;
   #initialStyleText: string;
 
-  constructor(elem: HTMLElement, body: Matter.Body, container?: BodyTrackingDomElement) {
+  constructor(
+    elem: HTMLElement,
+    body: Matter.Body,
+    container?: BodyTrackingDomElement,
+  ) {
     this.elem = elem;
     this.container = container;
     this.body = body;
@@ -83,10 +89,7 @@ class BodyTrackingDomElement {
     this.#width = width;
     this.#height = height;
     this.#initialElemPosition = Matter.Vector.create(x, y);
-    this.#initialCenter = Matter.Vector.create(
-      x + width / 2,
-      y + height / 2,
-    )
+    this.#initialCenter = Matter.Vector.create(x + width / 2, y + height / 2);
 
     // Save the element's initial inline style to be able to reset later.
     this.#initialStyleText = this.elem.style.cssText;
@@ -138,13 +141,13 @@ class BodyTrackingDomElement {
    * - item translation
    */
   transform(): {
-    parentRotationTranslation: Matter.Vector,
-    parentRotation: number,
-    parentTranslation: Matter.Vector,
-    translation: Matter.Vector,
-    rotation: number,
+    parentRotationTranslation: Matter.Vector;
+    parentRotation: number;
+    parentTranslation: Matter.Vector;
+    translation: Matter.Vector;
+    rotation: number;
   } {
-    let parentRotationTranslation;
+    let parentRotationTranslation: Matter.Vector | undefined;
     if (this.container) {
       // Use the rotation matrix to compute the translation due to the parent's rotation.
       // [x'] = [cos(theta) - sin(theta)][x]
@@ -171,15 +174,19 @@ class BodyTrackingDomElement {
       parentRotationTranslation = {
         x: newX - x,
         y: newY - y,
-      }
+      };
     }
     return {
-      parentRotationTranslation: parentRotationTranslation || Matter.Vector.create(0, 0),
+      parentRotationTranslation:
+        parentRotationTranslation || Matter.Vector.create(0, 0),
       parentRotation: this.container?.body.angle || 0,
-      parentTranslation: { x: this.container?.translateX() || 0, y: this.container?.translateY() || 0 },
+      parentTranslation: {
+        x: this.container?.translateX() || 0,
+        y: this.container?.translateY() || 0,
+      },
       translation: { x: this.translateX(), y: this.translateY() },
       rotation: this.body.angle,
-    }
+    };
   }
 
   /**
@@ -193,7 +200,9 @@ class BodyTrackingDomElement {
    * The y translation of the element relative to its original position.
    */
   translateY(): number {
-    return this.body.position.y - this.#initialElemPosition.y - this.#height / 2;
+    return (
+      this.body.position.y - this.#initialElemPosition.y - this.#height / 2
+    );
   }
 
   reset() {

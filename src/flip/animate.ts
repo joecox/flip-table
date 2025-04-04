@@ -3,6 +3,7 @@
  */
 
 import Matter from "matter-js";
+import { forceVector } from "./constants";
 
 export function registerAnimation(engine: Matter.Engine, table: Matter.Body) {
   Matter.Events.on(engine, "beforeUpdate", (ev) => {
@@ -20,6 +21,6 @@ function flip(table: Matter.Body) {
       x: table.bounds.max.x + 10,
       y: table.bounds.max.y,
     },
-    { x: 0.1, y: 2.1 },
+    forceVector,
   );
 }

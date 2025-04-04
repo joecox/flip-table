@@ -8,6 +8,7 @@ import {
   makeTableLeafCollisionFilter,
   tableCollisionFilter,
 } from "./collision";
+import { tableMass } from "./constants";
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
 
@@ -42,7 +43,11 @@ export class Flipper {
     groundBody.collisionFilter = groundCollisionFilter;
 
     // Add root table body
-    const tableBody = createBodyFromElement(table);
+    const tableBody = createBodyFromElement(table, {
+      // Hardcode the table mass so tables of different sizes behave similarly
+      mass: tableMass,
+      inverseMass: 1 / tableMass,
+    });
     tableBody.collisionFilter = tableCollisionFilter;
     const tableComposite = Matter.Composite.create({
       label: "table",
