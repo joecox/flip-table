@@ -11,7 +11,7 @@ import {
 import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
 
-// Override canCollide
+// Monkey-patch our own collision logic
 Matter.Detector.canCollide = canCollide;
 
 export class Flipper {
