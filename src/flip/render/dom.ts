@@ -1,4 +1,4 @@
-import type Matter from "matter-js";
+import Matter from "matter-js";
 import { Renderer } from "./renderer";
 
 /**
@@ -19,11 +19,10 @@ export class DomRenderer extends Renderer {
     //    while the animated leaves fly all over the place.
     //    (This is done implicitly while cloning the leaves in BodyTrackingDomElement)
     // 3. Clone the table
+    const tableTracking = new BodyTrackingDomElement(table.elem, table.body);
+    this.#trackedElements.push(tableTracking);
     this.#trackedElements.push(
-      ...leaves.map((l) => new BodyTrackingDomElement(l.elem, l.body)),
-    );
-    this.#trackedElements.push(
-      new BodyTrackingDomElement(table.elem, table.body),
+      ...leaves.map((l) => new BodyTrackingDomElement(l.elem, l.body, tableTracking)),
     );
     this.#animationRequestId = requestAnimationFrame(() => this.#rerender());
   }
@@ -52,57 +51,153 @@ export class DomRenderer extends Renderer {
  */
 class BodyTrackingDomElement {
   elem: HTMLElement;
-  clone: HTMLElement;
+  /**
+   * A container which this element's positioning is relative to and thus
+   * needs to use to translate between absolute body position and offset
+   * relative not just to itself but the container translation also.
+   */
+  container?: BodyTrackingDomElement;
   body: Matter.Body;
   #height: number;
   #width: number;
+
+  /**
+   * The initial top-left position of the DOM element
+   */
+  #initialElemPosition: Matter.Vector;
+  /**
+   * The initial center of the element.
+   */
+  #initialCenter: Matter.Vector;
   #initialStyleText: string;
 
-  constructor(elem: HTMLElement, body: Matter.Body) {
+  constructor(elem: HTMLElement, body: Matter.Body, container?: BodyTrackingDomElement) {
     this.elem = elem;
-    this.clone = elem.cloneNode(true) as HTMLElement;
-
-    // Style the clone using the original's computed styles
-    // takes cascading styles/etc into account that would
-    // be lost when the clone is in a different part of the DOM.
-    const computedStyle = window.getComputedStyle(elem);
-    for (let i = 0; i < computedStyle.length; i++) {
-      const propertyName = computedStyle.item(i);
-      this.clone.style.setProperty(propertyName, computedStyle.getPropertyValue(propertyName));
-    }
-
+    this.container = container;
     this.body = body;
 
     // As the DOM element rotates, the height and width of the bounding rect changes.
     // When we do computation on the element's position, we need to use the actual dimensions
     // of the element, not the bounding rect, which we save from its initial rect.
-    const { width, height } = elem.getBoundingClientRect();
+    const { x, y, width, height } = elem.getBoundingClientRect();
     this.#width = width;
     this.#height = height;
+    this.#initialElemPosition = Matter.Vector.create(x, y);
+    this.#initialCenter = Matter.Vector.create(
+      x + width / 2,
+      y + height / 2,
+    )
 
-    // Save the element's initial style to be able to reset later.
+    // Save the element's initial inline style to be able to reset later.
     this.#initialStyleText = this.elem.style.cssText;
-
-    // Hide the original element
-    this.elem.style.visibility = "hidden";
-
-    // Add the clone to the document
-    document.body.appendChild(this.clone);
   }
 
   render() {
-    this.clone.style.position = "fixed";
-    this.clone.style.top = `${this.body.position.y - this.#height / 2}px`;
-    this.clone.style.left = `${this.body.position.x - this.#width / 2}px`;
-    this.clone.style.width = `${this.#width}px`;
-    this.clone.style.height = `${this.#height}px`;
-    this.clone.style.transform = `rotate(${this.body.angle}rad)`;
+    // If the element is transforming relative to a transforming parent, we need to first undo the effect
+    // of the parent's transformations:
+    // - undo parent rotation first so translating element will be in correct direction
+    // - undo translation due to parent rotationf
+    // - undo parent translation
+    //
+    // From here, the element should be in its original position.
+    // Then apply the element's translation and rotation.
+    const {
+      parentRotationTranslation,
+      parentRotation,
+      parentTranslation,
+      translation,
+      rotation,
+    } = this.transform();
+    this.elem.style.transform = `
+      rotate(${-parentRotation}rad)
+      translate(${-parentRotationTranslation.x}px, ${-parentRotationTranslation.y}px)
+      translate(${-parentTranslation.x}px, ${-parentTranslation.y}px)
+      translate(${translation.x}px, ${translation.y}px)
+      rotate(${rotation}rad)
+    `;
+  }
+
+  /**
+   * Transformation of the DOM element to adhere to the desired body position and rotation.
+   *
+   * If the element is transforming relative to a transforming parent, we need to first undo the effect
+   * of the parent's transformations:
+   * - undo translation due to rotation - the child element will translate when the parent rotates
+   * - undo rotation
+   * - undo parent translation
+   *
+   * From here, the element should be in its original position. Then apply the element's translation and rotation.
+   */
+
+  /**
+   * Compute transforms:
+   * - translation due to parent rotation - the child element will translate when the parent rotates
+   * - parent rotation
+   * - parent translation
+   * - item rotation
+   * - item translation
+   */
+  transform(): {
+    parentRotationTranslation: Matter.Vector,
+    parentRotation: number,
+    parentTranslation: Matter.Vector,
+    translation: Matter.Vector,
+    rotation: number,
+  } {
+    let parentRotationTranslation;
+    if (this.container) {
+      // Use the rotation matrix to compute the translation due to the parent's rotation.
+      // [x'] = [cos(theta) - sin(theta)][x]
+      // [y']   [sin(theta) + cos(theta)][y]
+      //
+      // e.g. theta = 45deg = PI/4rad, (x,y) = (23, 12)
+      // [x'] = [cos(PI/4) - sin(PI/4)][23]
+      // [y']   [sin(PI/4) + cos(PI/4)][12]
+      // [x'] = [23*cos(PI/4) - 12*sin(PI/4)]
+      // [y']   [23*sin(PI/4) + 12*cos(PI/4)]
+      // [x'] = [16.26 - 8.49] = [ 7.77]
+      // [y']   [16.26 + 8.49]   [24.75]
+      // translation performed = { x: 7.77 - 23, y: 24.75 - 12 }
+
+      // rotation coordinates are relative to the container's center
+      const x = this.#initialCenter.x - this.container.#initialCenter.x;
+      const y = this.#initialCenter.y - this.container.#initialCenter.y;
+      const angle = this.container.body.angle;
+      const [newX, newY] = [
+        x * Math.cos(angle) - y * Math.sin(angle),
+        x * Math.sin(angle) + y * Math.cos(angle),
+      ];
+
+      parentRotationTranslation = {
+        x: newX - x,
+        y: newY - y,
+      }
+    }
+    return {
+      parentRotationTranslation: parentRotationTranslation || Matter.Vector.create(0, 0),
+      parentRotation: this.container?.body.angle || 0,
+      parentTranslation: { x: this.container?.translateX() || 0, y: this.container?.translateY() || 0 },
+      translation: { x: this.translateX(), y: this.translateY() },
+      rotation: this.body.angle,
+    }
+  }
+
+  /**
+   * The x translation of the element relative to its original position.
+   */
+  translateX(): number {
+    return this.body.position.x - this.#initialElemPosition.x - this.#width / 2;
+  }
+
+  /**
+   * The y translation of the element relative to its original position.
+   */
+  translateY(): number {
+    return this.body.position.y - this.#initialElemPosition.y - this.#height / 2;
   }
 
   reset() {
     // Reset the original element's inline style
     this.elem.style.cssText = this.#initialStyleText;
-    // Remove the clone
-    document.body.removeChild(this.clone);
   }
 }

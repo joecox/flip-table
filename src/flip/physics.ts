@@ -35,7 +35,7 @@ export class Flipper {
       window.innerWidth / 2,
       // position vertically in the center of the window
       tableBottom + groundHeight / 2,
-      window.innerWidth + 500,
+      window.innerWidth * 2,
       groundHeight,
       { isStatic: true },
     );
