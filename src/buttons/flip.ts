@@ -7,8 +7,8 @@ export function addButton(table: HTMLElement, debug = false) {
   const button = document.createElement("button");
   button.innerText = buttonText;
   button.style.position = 'absolute';
-  button.style.left = `${x}px`;
-  button.style.top = `${y}px`;
+  button.style.left = `${x + window.pageXOffset}px`;
+  button.style.top = `${y + window.pageYOffset}px`;
 
   // Dispatch the event and hide the button when we start flipping
   button.addEventListener("click", () => {
