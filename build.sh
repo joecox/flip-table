@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+rm -rf dist
 pnpm \
   esbuild \
   --format=esm \
@@ -8,5 +9,4 @@ pnpm \
   --bundle \
   --splitting \
   --outdir=dist \
-  --chunk-names="[name]" \
   src/setup.ts

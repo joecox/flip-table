@@ -1,18 +1,18 @@
-import { debugFlip, resetFlip, startFlip } from "../events";
+import { debugFlip, resetFlip, startFlip } from "./events";
 
-export function addButton(table: HTMLElement, debug = false) {
-  const buttonText = debug ? "Debug" : "(╯°□°)╯︵ ┻━┻";
-
-  const { x, y } = table.getBoundingClientRect();
+export function makeDebugButton(table: HTMLElement) {
   const button = document.createElement("button");
-  button.innerText = buttonText;
+  button.innerText = "Debug";
+
+  const { right, y } = table.getBoundingClientRect();
+
   button.style.position = 'absolute';
-  button.style.left = `${x + window.pageXOffset}px`;
-  button.style.top = `${y + window.pageYOffset}px`;
+  button.style.left = `${right + window.pageXOffset - 60}px`;
+  button.style.top = `${y + window.pageYOffset - 30}px`;
 
   // Dispatch the event and hide the button when we start flipping
   button.addEventListener("click", () => {
-    table.dispatchEvent(debug ? debugFlip : startFlip);
+    table.dispatchEvent(debugFlip);
   });
 
   // When we see a flip event, either we clicked or some other
@@ -29,5 +29,5 @@ export function addButton(table: HTMLElement, debug = false) {
     button.style.display = 'initial';
   });
 
-  document.body.append(button);
+  return button;
 }

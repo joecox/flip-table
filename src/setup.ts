@@ -1,6 +1,6 @@
-import { addButton } from "./buttons/flip";
-import { addResetButton } from "./buttons/reset";
+import { addResetButton } from "./reset";
 import { addFlipListeners } from "./flip/listeners";
+import { addButton } from "./button";
 
 export interface Args {
   tableSelector: string;
@@ -16,7 +16,8 @@ export async function setup({
       addButton(table);
 
       if (debug) {
-        addButton(table, debug);
+        const { makeDebugButton } = await import("./debug");
+        addButton(table, makeDebugButton);
       }
     }
   }

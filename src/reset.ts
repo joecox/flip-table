@@ -1,4 +1,4 @@
-import { debugFlip, resetFlip, startFlip } from "../events";
+import { debugFlip, resetFlip, startFlip } from "./events";
 
 export function addResetButton() {
   const sharedResetButton = document.createElement("button");
@@ -15,10 +15,10 @@ export function addResetButton() {
 
   // When we start flipping, show the reset button;
   document.addEventListener(startFlip.type, () => {
-    sharedResetButton.style.display = 'initial';
+    sharedResetButton.style.removeProperty("display");
   });
   document.addEventListener(debugFlip.type, () => {
-    sharedResetButton.style.display = 'initial';
+    sharedResetButton.style.removeProperty("display");
   });
 
   document.body.append(sharedResetButton);

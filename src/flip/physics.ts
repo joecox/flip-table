@@ -15,7 +15,7 @@ import { getLeafElements } from "./table";
 // Monkey-patch our own collision logic
 Detector.canCollide = canCollide;
 
-export class Flipper {
+export class Physics {
   engine: Engine;
   runner: Runner;
   renderer?: Renderer;
@@ -140,7 +140,7 @@ export class Flipper {
       groundBody,
     ]);
 
-    registerAnimation(this.engine, tableBody);
+    registerAnimation(this.engine, tableBody, table);
 
     this.renderer.start({ body: tableBody, elem: table }, leafsAndBodies);
     Runner.run(this.runner, this.engine);

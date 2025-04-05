@@ -1,17 +1,17 @@
 import { debugFlip, resetFlip, startFlip } from "../events";
 import { freezeViewport, unfreezeViewport } from "../freezeViewport";
-import { Flipper } from "./flipper";
+import { Physics } from "./physics";
 import { DomRenderer } from "./render/dom";
 
-let flipper: Flipper | undefined;
+let physics: Physics | undefined;
 
 export async function addFlipListeners(debug = false) {
   document.addEventListener(
     startFlip.type, (ev) => {
       if (ev.target instanceof HTMLElement) {
         freezeViewport();
-        flipper = new Flipper();
-        flipper.flip(ev.target, DomRenderer);
+        physics = new Physics();
+        physics.flip(ev.target, DomRenderer);
       }
     }
   )
@@ -22,8 +22,8 @@ export async function addFlipListeners(debug = false) {
       debugFlip.type, (ev) => {
         if (ev.target instanceof HTMLElement) {
           freezeViewport();
-          flipper = new Flipper();
-          flipper.flip(ev.target, DebugRenderer);
+          physics = new Physics();
+          physics.flip(ev.target, DebugRenderer);
         }
       }
     )
@@ -32,7 +32,7 @@ export async function addFlipListeners(debug = false) {
   document.addEventListener(
     resetFlip.type, () => {
       unfreezeViewport();
-      flipper?.stop();
+      physics?.stop();
     }
   )
 }
