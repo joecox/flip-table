@@ -7,6 +7,8 @@ buttonStylesheet.replaceSync(`
     --flip-button-width: 100px;
   }
   .flip-button {
+    all: initial;
+
     position: absolute;
     cursor: pointer;
     border: none;
@@ -16,6 +18,7 @@ buttonStylesheet.replaceSync(`
     border-radius: 4px;
     background-color: red;
     font-size: 20px;
+    font-family: system-ui;
     color: white;
     height: var(--flip-button-height);
     width: var(--flip-button-width);
