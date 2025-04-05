@@ -6,7 +6,7 @@ buttonStylesheet.replaceSync(`
     --flip-button-height: 50px;
     --flip-button-width: 100px;
   }
-  .flip-button {
+  .flip-button, .flip-button:hover {
     all: initial;
 
     position: absolute;
@@ -20,12 +20,13 @@ buttonStylesheet.replaceSync(`
     font-size: 20px;
     font-family: system-ui;
     color: white;
+    text-align: center;
     height: var(--flip-button-height);
     width: var(--flip-button-width);
-
-    &:hover {
-      filter: brightness(85%);
-    }
+    z-index: 9999;
+  }
+  .flip-button:hover {
+    filter: brightness(85%);
   }
 `)
 document.adoptedStyleSheets = [

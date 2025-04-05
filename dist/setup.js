@@ -1,8 +1,8 @@
-import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"./chunk-5SGWBU2F.js";import{b as y}from"./chunk-EK7ODJWE.js";function Y(){let e=document.createElement("button");e.style.position="fixed",e.style.zIndex="9999",e.style.top="10px",e.style.left="10px",e.style.display="none",e.innerText="Put table back \u252C\u2500\u252C\u30CE( \xBA _ \xBA\u30CE)",e.addEventListener("click",()=>{document.dispatchEvent(c),e.style.display="none"}),document.addEventListener(m.type,()=>{e.style.removeProperty("display")}),document.addEventListener(u.type,()=>{e.style.removeProperty("display")}),document.body.append(e)}var T=new CSSStyleSheet;document.adoptedStyleSheets=[...document.adoptedStyleSheets,T];function F(){T.replaceSync(`
+import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"./chunk-5SGWBU2F.js";import{b as y}from"./chunk-EK7ODJWE.js";function z(){let e=document.createElement("button");e.style.position="fixed",e.style.zIndex="9999",e.style.top="10px",e.style.left="10px",e.style.display="none",e.innerText="Put table back \u252C\u2500\u252C\u30CE( \xBA _ \xBA\u30CE)",e.addEventListener("click",()=>{document.dispatchEvent(c),e.style.display="none"}),document.addEventListener(m.type,()=>{e.style.removeProperty("display")}),document.addEventListener(u.type,()=>{e.style.removeProperty("display")}),document.body.append(e)}var T=new CSSStyleSheet;document.adoptedStyleSheets=[...document.adoptedStyleSheets,T];function F(){T.replaceSync(`
     body {
       overflow: hidden;
     }
-  `)}function z(){T.replaceSync("")}var o=y(h());var b=y(h());var N={x:.1,y:2.1};function G(e,t,n){let{x:i,y:r,height:l}=n.getBoundingClientRect(),a=i+window.pageXOffset,s=document.createElement("div");s.innerText="(-\u25A0_\u25A0)",s.className="table-flip-flipper",s.style.top=`${r+window.pageYOffset+l-40}px`,s.style.left="-200px",document.body.append(s),document.addEventListener(c.type,()=>{s.remove()}),b.Events.on(e,"beforeUpdate",p=>{p.timestamp>0&&p.timestamp<666?s.style.left=`${a*.33-200}px`:p.timestamp>666&&p.timestamp<1333?s.style.left=`${a*.66-200}px`:p.timestamp>1333&&p.timestamp<2e3?s.style.left=`${a-200}px`:p.timestamp>2e3&&t.angle<.75?(s.innerText="(\u30CE\u0CA0\u76CA\u0CA0)\u30CE",s.style.animation="0.2s shake infinite",it(t)):(s.innerText="(\u30CE\xB0\u25A1\xB0)\u30CE",s.style.removeProperty("animation"))})}var P=new CSSStyleSheet;P.replaceSync(`
+  `)}function Y(){T.replaceSync("")}var o=y(h());var b=y(h());var N={x:.1,y:2.1};function G(e,t,n){let{x:i,y:r,height:l}=n.getBoundingClientRect(),a=i+window.pageXOffset,s=document.createElement("div");s.innerText="(-\u25A0_\u25A0)",s.className="table-flip-flipper",s.style.top=`${r+window.pageYOffset+l-40}px`,s.style.left="-200px",document.body.append(s),document.addEventListener(c.type,()=>{s.remove()}),b.Events.on(e,"beforeUpdate",p=>{p.timestamp>0&&p.timestamp<666?s.style.left=`${a*.33-200}px`:p.timestamp>666&&p.timestamp<1333?s.style.left=`${a*.66-200}px`:p.timestamp>1333&&p.timestamp<2e3?s.style.left=`${a-200}px`:p.timestamp>2e3&&t.angle<.75?(s.innerText="(\u30CE\u0CA0\u76CA\u0CA0)\u30CE",s.style.animation="0.2s shake infinite",it(t)):(s.innerText="(\u30CE\xB0\u25A1\xB0)\u30CE",s.style.removeProperty("animation"))})}var P=new CSSStyleSheet;P.replaceSync(`
   @keyframes shake {
     0% { transform: translate(1px, 1px) rotate(0deg); }
     10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -29,12 +29,12 @@ import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"
       translate(${-i.x}px, ${-i.y}px)
       translate(${r.x}px, ${r.y}px)
       rotate(${l}rad)
-    `}transform(){let t;if(this.container){let n=this.#o.x-this.container.#o.x,i=this.#o.y-this.container.#o.y,r=this.container.body.angle,[l,a]=[n*Math.cos(r)-i*Math.sin(r),n*Math.sin(r)+i*Math.cos(r)];t={x:l-n,y:a-i}}return{parentRotationTranslation:t||M.Vector.create(0,0),parentRotation:this.container?.body.angle||0,parentTranslation:{x:this.container?.translateX()||0,y:this.container?.translateY()||0},translation:{x:this.translateX(),y:this.translateY()},rotation:this.body.angle}}translateX(){return this.body.position.x-this.#n.x-this.#e/2}translateY(){return this.body.position.y-this.#n.y-this.#t/2}reset(){this.elem.style.cssText=this.#i}};var g;async function Q(e=!1){if(document.addEventListener(m.type,t=>{t.target instanceof HTMLElement&&(F(),g=new x,g.flip(t.target,w))}),e){let{DebugRenderer:t}=await import("./debug-X4753CP6.js");document.addEventListener(u.type,n=>{n.target instanceof HTMLElement&&(F(),g=new x,g.flip(n.target,t))})}document.addEventListener(c.type,()=>{z(),g?.stop()})}var Z=new CSSStyleSheet;Z.replaceSync(`
+    `}transform(){let t;if(this.container){let n=this.#o.x-this.container.#o.x,i=this.#o.y-this.container.#o.y,r=this.container.body.angle,[l,a]=[n*Math.cos(r)-i*Math.sin(r),n*Math.sin(r)+i*Math.cos(r)];t={x:l-n,y:a-i}}return{parentRotationTranslation:t||M.Vector.create(0,0),parentRotation:this.container?.body.angle||0,parentTranslation:{x:this.container?.translateX()||0,y:this.container?.translateY()||0},translation:{x:this.translateX(),y:this.translateY()},rotation:this.body.angle}}translateX(){return this.body.position.x-this.#n.x-this.#e/2}translateY(){return this.body.position.y-this.#n.y-this.#t/2}reset(){this.elem.style.cssText=this.#i}};var g;async function Q(e=!1){if(document.addEventListener(m.type,t=>{t.target instanceof HTMLElement&&(F(),g=new x,g.flip(t.target,w))}),e){let{DebugRenderer:t}=await import("./debug-X4753CP6.js");document.addEventListener(u.type,n=>{n.target instanceof HTMLElement&&(F(),g=new x,g.flip(n.target,t))})}document.addEventListener(c.type,()=>{Y(),g?.stop()})}var Z=new CSSStyleSheet;Z.replaceSync(`
   :root {
     --flip-button-height: 50px;
     --flip-button-width: 100px;
   }
-  .flip-button {
+  .flip-button, .flip-button:hover {
     all: initial;
 
     position: absolute;
@@ -48,11 +48,12 @@ import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"
     font-size: 20px;
     font-family: system-ui;
     color: white;
+    text-align: center;
     height: var(--flip-button-height);
     width: var(--flip-button-width);
-
-    &:hover {
-      filter: brightness(85%);
-    }
+    z-index: 9999;
   }
-`);document.adoptedStyleSheets=[...document.adoptedStyleSheets,Z];function st(e){let t=document.createElement("button");t.innerText="Flip Me",t.className="flip-button";let{x:n,y:i}=e.getBoundingClientRect();return t.style.left=`calc(${n+window.pageXOffset}px - var(--flip-button-width) + 20px)`,t.style.top=`calc(${i+window.pageYOffset}px - var(--flip-button-height) + 20px)`,t.addEventListener("click",()=>{e.dispatchEvent(m)}),document.addEventListener(m.type,()=>{t.style.display="none"}),document.addEventListener(u.type,()=>{t.style.display="none"}),document.addEventListener(c.type,()=>{t.style.removeProperty("display")}),t}function k(e,t=st){let n=t(e);document.body.append(n)}async function Wt({tableSelector:e,debug:t=!1}){let n=document.querySelectorAll(e);for(let i of n)if(i instanceof HTMLElement&&(k(i),t)){let{makeDebugButton:r}=await import("./debug-MVXKYX3G.js");k(i,r)}Y(),await Q(t),console.log("%cYOU MAY FLIP WHEN READY \u{1FAE1}","background-color: aquamarine; color: black; font-size: 2rem"),console.log("%cFor best results, close DevTools before flipping.","font-style: italic; font-size: 1.2rem")}export{Wt as setup};
+  .flip-button:hover {
+    filter: brightness(85%);
+  }
+`);document.adoptedStyleSheets=[...document.adoptedStyleSheets,Z];function st(e){let t=document.createElement("button");t.innerText="Flip Me",t.className="flip-button";let{x:n,y:i}=e.getBoundingClientRect();return t.style.left=`calc(${n+window.pageXOffset}px - var(--flip-button-width) + 20px)`,t.style.top=`calc(${i+window.pageYOffset}px - var(--flip-button-height) + 20px)`,t.addEventListener("click",()=>{e.dispatchEvent(m)}),document.addEventListener(m.type,()=>{t.style.display="none"}),document.addEventListener(u.type,()=>{t.style.display="none"}),document.addEventListener(c.type,()=>{t.style.removeProperty("display")}),t}function k(e,t=st){let n=t(e);document.body.append(n)}async function Wt({tableSelector:e,debug:t=!1}){let n=document.querySelectorAll(e);for(let i of n)if(i instanceof HTMLElement&&(k(i),t)){let{makeDebugButton:r}=await import("./debug-MVXKYX3G.js");k(i,r)}z(),await Q(t),console.log("%cYOU MAY FLIP WHEN READY \u{1FAE1}","background-color: aquamarine; color: black; font-size: 2rem"),console.log("%cFor best results, close DevTools before flipping.","font-style: italic; font-size: 1.2rem")}export{Wt as setup};
