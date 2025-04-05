@@ -35,6 +35,8 @@ import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"
     --flip-button-width: 100px;
   }
   .flip-button {
+    all: initial;
+
     position: absolute;
     cursor: pointer;
     border: none;
@@ -44,6 +46,7 @@ import{a as h,b as D}from"./chunk-NG2YUV46.js";import{a as m,b as c,c as u}from"
     border-radius: 4px;
     background-color: red;
     font-size: 20px;
+    font-family: system-ui;
     color: white;
     height: var(--flip-button-height);
     width: var(--flip-button-width);
