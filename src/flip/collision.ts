@@ -1,5 +1,14 @@
 import Matter from "matter-js";
 
+/**
+ * Initial collision logic re-used from native collision method:
+ * - objects of the same positive group collide with each other
+ * - objects of the same negative group do not collide
+ *
+ * We add the following:
+ * - If both objects have each others' groups in collidesWith,
+ *   the objects collide.
+ */
 interface ModifiedCollisionFilter {
   group: number;
   collidesWith?: number[];

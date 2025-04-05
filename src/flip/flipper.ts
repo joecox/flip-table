@@ -18,18 +18,18 @@ Matter.Detector.canCollide = canCollide;
 export class Flipper {
   engine: Matter.Engine;
   runner: Matter.Runner;
-  renderer: Renderer;
+  renderer?: Renderer;
 
-  constructor(rendererCls: typeof Renderer) {
+  constructor() {
     this.engine = Matter.Engine.create();
     this.runner = Matter.Runner.create();
-    this.renderer = new rendererCls(this.engine);
   }
 
-  flip(table: HTMLElement) {
-    const { bottom: tableBottom } = table.getBoundingClientRect();
+  flip(table: HTMLElement, rendererCls: typeof Renderer) {
+    this.renderer = new rendererCls(this.engine);
 
     // Add the ground positioned at the bottom of the table
+    const { bottom: tableBottom } = table.getBoundingClientRect();
     const groundHeight = 20;
     const groundBody = Matter.Bodies.rectangle(
       // position horizontally in the center of the window
@@ -147,9 +147,17 @@ export class Flipper {
   }
 
   stop() {
-    this.renderer.stop();
+    this.renderer?.stop();
     Matter.Runner.stop(this.runner);
     Matter.World.clear(this.engine.world, false);
     Matter.Engine.clear(this.engine);
+
+    // reset the engine
+    this.engine.timing = {
+      ...this.engine.timing,
+      timestamp: 0,
+      lastDelta: 0,
+      lastElapsed: 0,
+    }
   }
 }
