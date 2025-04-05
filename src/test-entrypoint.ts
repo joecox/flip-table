@@ -10,7 +10,6 @@ console.log(
 const { setup } = await import("./setup");
 
 setup({
-  // buttonParentSelector: "#button-slot",
   tableSelector: "#table",
   debug: true,
 });

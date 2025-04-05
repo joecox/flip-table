@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { type Body, Vector } from "matter-js";
 import { Renderer } from "./renderer";
 
 /**
@@ -9,8 +9,8 @@ export class DomRenderer extends Renderer {
   #trackedElements: BodyTrackingDomElement[] = [];
 
   start(
-    table: { body: Matter.Body; elem: HTMLElement },
-    leaves: { body: Matter.Body; elem: HTMLElement }[],
+    table: { body: Body; elem: HTMLElement },
+    leaves: { body: Body; elem: HTMLElement }[],
   ) {
     const tableTracking = new BodyTrackingDomElement(table.elem, table.body);
     this.#trackedElements.push(tableTracking);
@@ -52,23 +52,23 @@ class BodyTrackingDomElement {
    * relative not just to itself but the container translation also.
    */
   container?: BodyTrackingDomElement;
-  body: Matter.Body;
+  body: Body;
   #height: number;
   #width: number;
 
   /**
    * The initial top-left position of the DOM element
    */
-  #initialElemPosition: Matter.Vector;
+  #initialElemPosition: Vector;
   /**
    * The initial center of the element.
    */
-  #initialCenter: Matter.Vector;
+  #initialCenter: Vector;
   #initialStyleText: string;
 
   constructor(
     elem: HTMLElement,
-    body: Matter.Body,
+    body: Body,
     container?: BodyTrackingDomElement,
   ) {
     this.elem = elem;
@@ -81,8 +81,8 @@ class BodyTrackingDomElement {
     const { x, y, width, height } = elem.getBoundingClientRect();
     this.#width = width;
     this.#height = height;
-    this.#initialElemPosition = Matter.Vector.create(x, y);
-    this.#initialCenter = Matter.Vector.create(x + width / 2, y + height / 2);
+    this.#initialElemPosition = Vector.create(x, y);
+    this.#initialCenter = Vector.create(x + width / 2, y + height / 2);
 
     // Save the element's initial inline style to be able to reset later.
     this.#initialStyleText = this.elem.style.cssText;
@@ -124,13 +124,13 @@ class BodyTrackingDomElement {
    * - item translation
    */
   transform(): {
-    parentRotationTranslation: Matter.Vector;
+    parentRotationTranslation: Vector;
     parentRotation: number;
-    parentTranslation: Matter.Vector;
-    translation: Matter.Vector;
+    parentTranslation: Vector;
+    translation: Vector;
     rotation: number;
   } {
-    let parentRotationTranslation: Matter.Vector | undefined;
+    let parentRotationTranslation: Vector | undefined;
     if (this.container) {
       // Use the rotation matrix to compute the translation due to the parent's rotation.
       // [x'] = [cos(theta) - sin(theta)][x]
@@ -161,7 +161,7 @@ class BodyTrackingDomElement {
     }
     return {
       parentRotationTranslation:
-        parentRotationTranslation || Matter.Vector.create(0, 0),
+        parentRotationTranslation || Vector.create(0, 0),
       parentRotation: this.container?.body.angle || 0,
       parentTranslation: {
         x: this.container?.translateX() || 0,

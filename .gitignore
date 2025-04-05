@@ -1,4 +1,2 @@
 node_modules
-dist/*
-!dist/debug.js
-!dist/setup.js
+preview/

@@ -1,17 +1,17 @@
-import type Matter from "matter-js";
+import type { Body, Engine } from "matter-js";
 
 export class Renderer {
-  engine: Matter.Engine;
+  engine: Engine;
 
-  constructor(engine: Matter.Engine) {
+  constructor(engine: Engine) {
     this.engine = engine;
   }
   /**
    * Begin rendering objects to the screen.
    */
   start(
-    _table: { body: Matter.Body; elem: HTMLElement },
-    _leafBodies: { body: Matter.Body; elem: HTMLElement }[],
+    _table: { body: Body; elem: HTMLElement },
+    _leafBodies: { body: Body; elem: HTMLElement }[],
   ) {
     throw new Error("Not implemented");
   }

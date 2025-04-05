@@ -1,5 +1,4 @@
-import type { IBodyDefinition } from "matter-js";
-import Matter from "matter-js";
+import { Bodies, type IBodyDefinition } from "matter-js";
 
 export function createBodyFromElement(
   elem: HTMLElement,
@@ -12,7 +11,7 @@ export function createBodyFromElement(
   const initialMJSBodyX = x + width / 2;
   const initialMJSBodyY = y + height / 2;
 
-  return Matter.Bodies.rectangle(
+  return Bodies.rectangle(
     initialMJSBodyX,
     initialMJSBodyY,
     width,

@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Body } from "matter-js";
 
 /**
  * Initial collision logic re-used from native collision method:
@@ -39,9 +39,9 @@ export function canCollide(
 // - Table leaves should collide with one another.
 // - Each table leaf collides with the shelf it sits on but no other shelves.
 // - Shelves have no other collision rules; they are affixed in their spots to the table.
-const groundGroup = Matter.Body.nextGroup(false);
-const tableGroup = Matter.Body.nextGroup(false);
-const tableLeafGroup = Matter.Body.nextGroup(false);
+const groundGroup = Body.nextGroup(false);
+const tableGroup = Body.nextGroup(false);
+const tableLeafGroup = Body.nextGroup(false);
 
 export const groundCollisionFilter: ModifiedCollisionFilter = {
   group: groundGroup,

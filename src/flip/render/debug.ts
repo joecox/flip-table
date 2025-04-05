@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Render } from "matter-js";
 import { Renderer } from "./renderer";
 
 export class DebugRenderer extends Renderer {
@@ -11,7 +11,7 @@ export class DebugRenderer extends Renderer {
     this.#canvas = canvas;
     document.body.appendChild(this.#canvas);
 
-    const render = Matter.Render.create({
+    const render = Render.create({
       canvas,
       engine: this.engine,
       options: {
@@ -28,7 +28,7 @@ export class DebugRenderer extends Renderer {
         showPositions: true,
       },
     });
-    Matter.Render.run(render);
+    Render.run(render);
   }
 
   stop() {

@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Engine, Runner, Detector, Bodies, Composite, Body, Constraint, World} from "matter-js";
 import { registerAnimation } from "./animate";
 import { createBodyFromElement } from "./body";
 import {
@@ -13,16 +13,16 @@ import type { Renderer } from "./render/renderer";
 import { getLeafElements } from "./table";
 
 // Monkey-patch our own collision logic
-Matter.Detector.canCollide = canCollide;
+Detector.canCollide = canCollide;
 
 export class Flipper {
-  engine: Matter.Engine;
-  runner: Matter.Runner;
+  engine: Engine;
+  runner: Runner;
   renderer?: Renderer;
 
   constructor() {
-    this.engine = Matter.Engine.create();
-    this.runner = Matter.Runner.create();
+    this.engine = Engine.create();
+    this.runner = Runner.create();
   }
 
   flip(table: HTMLElement, rendererCls: typeof Renderer) {
@@ -31,7 +31,7 @@ export class Flipper {
     // Add the ground positioned at the bottom of the table
     const { bottom: tableBottom } = table.getBoundingClientRect();
     const groundHeight = 20;
-    const groundBody = Matter.Bodies.rectangle(
+    const groundBody = Bodies.rectangle(
       // position horizontally in the center of the window
       window.innerWidth / 2,
       // position vertically in the center of the window
@@ -49,17 +49,17 @@ export class Flipper {
       inverseMass: 1 / tableMass,
     });
     tableBody.collisionFilter = tableCollisionFilter;
-    const tableComposite = Matter.Composite.create({
+    const tableComposite = Composite.create({
       label: "table",
       bodies: [tableBody],
     });
 
     const tableLeafs = getLeafElements(table);
-    const leafBodies: Matter.Body[] = [];
-    const leafsAndBodies: { body: Matter.Body; elem: HTMLElement }[] = [];
+    const leafBodies: Body[] = [];
+    const leafsAndBodies: { body: Body; elem: HTMLElement }[] = [];
 
     for (const leaf of tableLeafs) {
-      const shelfGroup = Matter.Body.nextGroup(false);
+      const shelfGroup = Body.nextGroup(false);
 
       const leafMass =
         Math.random() * (maxLeafMass - minLeafMass) + minLeafMass;
@@ -69,7 +69,7 @@ export class Flipper {
         inverseMass: 1 / leafMass,
       });
       // Scale down the body so it collides less with other leaves.
-      Matter.Body.scale(
+      Body.scale(
         leafBody,
         // scale down sides by 10% each
         0.8,
@@ -83,7 +83,7 @@ export class Flipper {
       leafsAndBodies.push({ body: leafBody, elem: leaf });
 
       const { left, bottom, width } = leaf.getBoundingClientRect();
-      const shelf = Matter.Bodies.rectangle(
+      const shelf = Bodies.rectangle(
         left + width / 2,
         bottom,
         width,
@@ -95,7 +95,7 @@ export class Flipper {
       );
       shelf.collisionFilter = makeShelfCollisionFilter(shelfGroup);
 
-      const leftConstraint = Matter.Constraint.create({
+      const leftConstraint = Constraint.create({
         bodyA: tableBody,
         bodyB: shelf,
         // Constrain the shelf to the table at its left end
@@ -111,7 +111,7 @@ export class Flipper {
         },
         length: 0,
       });
-      const rightConstraint = Matter.Constraint.create({
+      const rightConstraint = Constraint.create({
         bodyA: tableBody,
         bodyB: shelf,
         // Constrain the shelf to the table at its left end
@@ -128,13 +128,13 @@ export class Flipper {
         length: 0,
       });
 
-      Matter.Composite.add(tableComposite, shelf);
-      Matter.Composite.add(tableComposite, leftConstraint);
-      Matter.Composite.add(tableComposite, rightConstraint);
+      Composite.add(tableComposite, shelf);
+      Composite.add(tableComposite, leftConstraint);
+      Composite.add(tableComposite, rightConstraint);
     }
 
     // add the ground, table (+shelves), and leaves to the world
-    Matter.Composite.add(this.engine.world, [
+    Composite.add(this.engine.world, [
       tableComposite,
       ...leafBodies,
       groundBody,
@@ -143,14 +143,14 @@ export class Flipper {
     registerAnimation(this.engine, tableBody);
 
     this.renderer.start({ body: tableBody, elem: table }, leafsAndBodies);
-    Matter.Runner.run(this.runner, this.engine);
+    Runner.run(this.runner, this.engine);
   }
 
   stop() {
     this.renderer?.stop();
-    Matter.Runner.stop(this.runner);
-    Matter.World.clear(this.engine.world, false);
-    Matter.Engine.clear(this.engine);
+    Runner.stop(this.runner);
+    World.clear(this.engine.world, false);
+    Engine.clear(this.engine);
 
     // reset the engine
     this.engine.timing = {

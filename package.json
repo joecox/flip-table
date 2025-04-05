@@ -1,18 +1,19 @@
 {
   "name": "flip-table",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "dependencies": {
     "matter-js": "0.20.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/matter-js": "0.19.8",
+    "esbuild": "^0.25.2",
     "typescript": "^5.8.2",
     "vite": "^6.2.4"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "esbuild"
+    ]
   }
 }
